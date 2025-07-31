@@ -11,6 +11,8 @@ let shotsFired = 0; // 玩家点击次数（无论有没有击中）
 let timeLeft = 60;
 let timerId = null;
 let gameStarted = false;
+let canStart = true;
+
 
 const SPHERE_COUNT = 6;
 const WALL_WIDTH = 4;
@@ -90,9 +92,6 @@ function init() {
 
     controls = new PointerLockControls(camera, document.body);
 
-    document.body.addEventListener('click', () => {
-        if (gameRunning) controls.lock();
-    });
 
     const initialWallDistance = parseFloat(wallDistanceInput.value) || 30;
     createWall(initialWallDistance);
@@ -346,12 +345,17 @@ function animate() {
 }
 
 window.startGame = function () {
+    if (!canStart) return; // 不允许过早开始
+
     if (!gameRunning) {
         init();
         gameRunning = true;
     }
+
     if (gameStarted) return; // 防止重复启动
     gameStarted = true;
+
+    controls.lock(); // 自动锁定视角
 
     // 初始化数据
     score = 0;
@@ -376,14 +380,18 @@ window.startGame = function () {
     }, 1000);
 };
 
+
 function endGame() {
     gameStarted = false;
     controls.unlock();
-
-    //   const acc = shotsFired > 0 ? ((score / shotsFired) * 100).toFixed(1) : 0;
-    //   showResult(score, acc);
-
-    //   gameInfo.style.display = 'none';
     spheres.forEach(s => scene.remove(s));
     spheres = [];
+    
+    // 禁用 startGame 按钮 1 秒
+    canStart = false;
+    setTimeout(() => {
+        canStart = true;
+    }, 1000);
+    controls.unlock();
 }
+
