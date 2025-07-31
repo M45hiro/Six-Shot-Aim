@@ -12,7 +12,8 @@ A web-based six-target shooting practice tool designed to help improve aiming sk
 ## Usage
 
 Open the web page and use the controls to set your preferred sensitivity, target size, distance, and crosshair appearance. Click **Start** to begin a one-minute aiming session. Click on the targets to score points. After the time is up, your score and accuracy will be displayed.
-
+Click this link to visit our aim-website
+https://m45hiro.github.io/Six-Shot-Aim/
 ## Notice
 
 This project requires a Live Server environment to run properly due to Three.js module usage. You can use VSCode's Live Server extension or any other local HTTP server.
