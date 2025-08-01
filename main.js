@@ -15,8 +15,8 @@ let canStart = true;
 
 
 const SPHERE_COUNT = 6;
-const WALL_WIDTH = 4;
-const WALL_HEIGHT = 3;
+const WALL_WIDTH = 6;
+const WALL_HEIGHT = 4;
 
 const FLOOR_WIDTH = 200;
 const FLOOR_DEPTH = 200;
@@ -40,6 +40,8 @@ const resultAccuracy = document.getElementById('resultAccuracy');
 const resultCloseBtn = document.getElementById('resultCloseBtn');
 const resultOverlay = document.getElementById('resultOverlay');
 const resultModal = document.getElementById('resultModal');
+
+
 
 
 let sensitivity = parseFloat(sensitivitySlider.value);
@@ -129,16 +131,22 @@ function init() {
     colorSelector.addEventListener('change', (e) => {
         updateCrosshairColor(e.target.value);
     });
-
+    crosshairSize.addEventListener('change', (e) => {
+        updateCrosshairSize(e.target.value);
+    });
     document.addEventListener('mousemove', onMouseMove);
 
-    updateCrosshairColor(colorSelector.value);
 
     animate();
 }
 
 function updateCrosshairColor(color) {
     crosshair.style.background = color;
+}
+
+function updateCrosshairSize(size) {
+    crosshair.style.width = `${size}px`;
+    crosshair.style.height = `${size}px`;
 }
 
 function onWindowResize() {
@@ -184,7 +192,7 @@ function spawnSpheres() {
         let newSphere;
 
         while (!valid && attempts < maxAttempts) {
-            const yMin = WALL_HEIGHT * 0.8 + radius - 1;
+            const yMin = WALL_HEIGHT * 0.8 + radius - 2;
             const yMax = WALL_HEIGHT * 0.8 - radius;
 
             const usableWidth = WALL_WIDTH * 0.5;
@@ -225,7 +233,7 @@ function spawnSpheres() {
 const raycaster = new THREE.Raycaster();
 
 function onMouseClick(event) {
-    if (!gameStarted || !controls.isLocked) return;
+    if (!controls.isLocked) return;
 
     shotsFired++;
 
@@ -264,7 +272,7 @@ function spawnOneSphere() {
     let newSphere;
 
     while (!valid && attempts < maxAttempts) {
-        const yMin = WALL_HEIGHT * 0.8 + radius - 1;
+        const yMin = WALL_HEIGHT * 0.8 + radius - 2;
         const yMax = WALL_HEIGHT * 0.8 - radius;
 
         const usableWidth = WALL_WIDTH * 0.5;
@@ -347,13 +355,8 @@ function animate() {
 window.startGame = function () {
     if (!canStart) return; // 不允许过早开始
 
-    if (!gameRunning) {
-        init();
-        gameRunning = true;
-    }
+    init();
 
-    if (gameStarted) return; // 防止重复启动
-    gameStarted = true;
 
     controls.lock(); // 自动锁定视角
 
@@ -361,12 +364,11 @@ window.startGame = function () {
     score = 0;
     shotsFired = 0;
     timeLeft = 60;
-
+    
     updateGameInfo();
     gameInfo.style.display = 'block';
 
     spawnSpheres();
-
     // 开始倒计时
     if (timerId) clearInterval(timerId);
     timerId = setInterval(() => {
@@ -378,11 +380,11 @@ window.startGame = function () {
             endGame();
         }
     }, 1000);
+
 };
 
 
 function endGame() {
-    gameStarted = false;
     controls.unlock();
     spheres.forEach(s => scene.remove(s));
     spheres = [];
