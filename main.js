@@ -158,7 +158,7 @@ function onWindowResize() {
 function updateSensitivity(value) {
     let v = parseFloat(value);
     if (isNaN(v)) return;
-    v = Math.min(Math.max(v, 0.1), 2);
+    v = Math.min(Math.max(v, 0.01), 2);
     sensitivitySlider.value = v;
     sensitivityNumber.value = v;
     sensitivity = v;
